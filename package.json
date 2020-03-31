@@ -1,7 +1,7 @@
 {
-  "name": "Kisan-Vikas",
+  "name": "kisan-vikas",
   "version": "1.0.0",
-  "description": "Project by Chaitali and Hemant",
+  "description": "project related to framer",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,8 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/attainu/Kisan-Vikas.git"
   },
-  "keywords": [],
-  "author": "",
+  "author": "chaitali",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/attainu/Kisan-Vikas/issues"
