@@ -25,13 +25,12 @@ const {
 // done(null, user) -- Positive form (req.user);
 // done(null, false, customErrorMessage) -- Negative form (400) Client gave wrong details
 // done(err) -- Negative form Server Error (500)
-
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromExtractors([
     ExtractJwt.fromAuthHeaderWithScheme("JWT"),
     req => req.cookies.token
   ]),
-  secretOrKey: TOKEN_SECRET
+  secretOrKey:TOKEN_SECRET
 };
 
 passport.use(

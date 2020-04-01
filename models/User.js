@@ -72,7 +72,7 @@ class User extends Model {
     async generateToken(mode) {
 
         // const secretKey = process.env.TOKEN_SECRET;
-        const secretKey = `${this.getDataValue("email")} - ${new Date(this.getDataValue("createdAt")).getTime()}`;
+        const secretKey =process.env.TOKEN_SECRET;
         // console.log(secretKey);
         const token = await sign({
             id: this.getDataValue("id")
