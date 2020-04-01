@@ -7,12 +7,14 @@ const {
     changePassword,
     forgotPassword,
     resetPassword,
+    confirmEmail,
     deactivateAccount,
     showUserData,
     fetchUserFromGoogle,
     fetchUserFromFacebook} = require("../controller/userController");
 const router = Router();
 router.post("/register",register);
+router.get("/confirm/:token",confirmEmail)
 
 router.post("/login", login );
 router.post("/address", function (req,res){
