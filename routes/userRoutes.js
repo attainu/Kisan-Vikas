@@ -10,7 +10,7 @@ const {
     deactivateAccount,
     showUserData,
     fetchUserFromGoogle,
-    fetchUserFromFacebook} = require("../Kisan-Vikas/controller/userController");
+    fetchUserFromFacebook} = require("../controller/userController");
 const router = Router();
 router.post("/register",register);
 
