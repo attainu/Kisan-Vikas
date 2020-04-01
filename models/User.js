@@ -73,7 +73,7 @@ class User extends Model {
 
         // const secretKey = process.env.TOKEN_SECRET;
         const secretKey = `${this.getDataValue("email")} - ${new Date(this.getDataValue("createdAt")).getTime()}`;
-        console.log(secretKey);
+        // console.log(secretKey);
         const token = await sign({
             id: this.getDataValue("id")
         },
