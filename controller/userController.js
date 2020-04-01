@@ -16,11 +16,14 @@ module.exports =   {
                return res.status(401).send('invalid crendentials')
            }
            req.user = user.dataValues;
-           const secretKey = `${user.getDataValue("email")}-${new Date(user.getDataValue("creatAt")).getTime()}`;
-           const payload = await verify(token,secretKey);
-           console.log(payload);
+           console.log(token)
+        // const secretKey = `${this.getDataValue("email")} - ${new Date(this.getDataValue("createdAt")).getTime()}`;
+        const secretKey = `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
+        console.log(secretKey);
+        const payload = await verify(token,secretKey);
+           
            if(payload) {
-               await User.update({
+               await user.update({
                    isConfirmed:true,
                    token:""
                });
@@ -86,19 +89,23 @@ module.exports =   {
 
     async login (req,res) {
         const{ email,password } = req.body;
+        console.log(!email,!password)
         if(!email || !password)
-        return res.status(400).send("incorrect crendentials");
+            {
+                return res.status(400).send("incorrect crendentials");
+            }
+        
         try {
             const user = await User.findByEmailAndPassword(email, password);
             if (user.dataValues.isConfirmed) {
-                return res.send("incorrect crendentials");
+                await user.generateToken("confirm");
+                return res.json({
+                token:"JWT" + user.token
+            });
             }
             return res.status(403).send("you havent confirmed your account.please check your mail")
 
-            // await user.generateToken();
-            // return res.json({
-            //     token:"JWT" + user.token
-            // });
+            
         } catch(err) {
             console.log(err.message)
             res.send("invalide crendentials")
