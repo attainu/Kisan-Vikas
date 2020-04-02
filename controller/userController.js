@@ -18,7 +18,8 @@ module.exports =   {
            req.user = user.dataValues;
            console.log(token)
         // const secretKey = `${this.getDataValue("email")} - ${new Date(this.getDataValue("createdAt")).getTime()}`;
-        const secretKey = `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
+        // const secretKey = `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
+        const secretKey = process.env.TOKEN_SECRET;
         console.log(secretKey);
         const payload = await verify(token,secretKey);
            
@@ -41,34 +42,34 @@ module.exports =   {
         }
     },
 
-    async resetPassword (req, res) {
-        const {resetToken } = req.params;
-        try {
-            //finding the user with the help of token
-            const user = await User.findOne({where:{
-                resetToken
-            }});
-            if (!user) {
-                return res.send("forgot password");
-            }
-            const secretKey = 
-            `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
-            const payload = await verify(resetToken,secretKey);
-            if(payload) {
-                return res.send("resetPassword",{
-                    email:user.getDataValue("email")
-                });
-        }
+    // async resetPassword (req, res) {
+    //     const {resetToken } = req.params;
+    //     try {
+    //         //finding the user with the help of token
+    //         const user = await User.findOne({where:{
+    //             resetToken
+    //         }});
+    //         if (!user) {
+    //             return res.send("forgot password");
+    //         }
+    //         const secretKey = process.env.TOKEN_SECRET;
+    //         // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
+    //         const payload = await verify(resetToken,secretKey);
+    //         if(payload) {
+    //             return res.send("resetPassword",{
+    //                 email:user.getDataValue("email")
+    //             });
+    //     }
             
-        } catch(err) {
-            console.log(err);
-            if(err.name === "TokenEpiredError") {
-                return res.send("forgot password")
-            }
-            res.status(500).send("server error")
-        }
+    //     } catch(err) {
+    //         console.log(err);
+    //         if(err.name === "TokenEpiredError") {
+    //             return res.send("forgot password")
+    //         }
+    //         res.status(500).send("server error")
+    //     }
         
-    },
+    // },
     async register(req, res) {
         try {
             const user = await User.create({
@@ -112,7 +113,28 @@ module.exports =   {
         }
         
         
-        },
+    },
+
+    async logout(req, res) {
+        // Get the users json file
+        const id = req.user.id;
+        try {
+          const user = await User.findOne({
+            where: {
+              id
+            }
+          });
+          await user.setDataValue("token", "");
+          await user.save();
+          res.send("logout successfully ")
+        } catch (err) {
+          console.log(err.message);
+          res.send("invalid Credential");
+        }
+    },
+
+        
+        
         
     
 
@@ -164,10 +186,10 @@ module.exports =   {
           
         },
 
-        async regenerateToken(req, res) {
-            await req.user.generateConfirmToken();
-            res.status(202).send("confirmation email resent.please check your inbox")
-        },
+        // async regenerateToken(req, res) {
+        //     await req.user.generateConfirmToken();
+        //     res.status(202).send("confirmation email resent.please check your inbox")
+        // },
 
         async forgotPassword(req, res){
             const { email } = req.body;

@@ -1,4 +1,4 @@
-const Orders = require("../models/Orders");
+const Orders = require("../models/order");
 const User = require("../models/User");
 const instance = require("../utils/razorpay");
 const createSignature = require("../utils/createSignature");

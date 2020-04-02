@@ -31,6 +31,8 @@ app.use(require("./routes/addressRoutes"));
 app.use(require("./routes/productRoutes"));
 //cart Routes
 app.use(require("./routes/cartRoutes"));
+//order Routes
+app.use(require("./routes/orderRoutes"));
 
 
 app.listen(3000,function(){

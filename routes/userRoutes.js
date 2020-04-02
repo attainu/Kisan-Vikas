@@ -4,6 +4,7 @@ const User = require("../models/User");
 const { 
     register, 
     login ,
+    logout,
     changePassword,
     forgotPassword,
     resetPassword,
@@ -17,21 +18,24 @@ router.post("/register",register);
 router.get("/confirm/:token",confirmEmail)
 
 router.post("/login", login );
-router.post("/address", function (req,res){
-    const id = 1
-    const address =  User.findOne({
-        where: {
-            id
-        }
-    });
+router.post("/logout",logout);
+// router.post("/address", function (req,res){
+//     const id = 1
+//     const address =  User.findOne({
+//         where: {
+//             id
+//         }
+//     });
     
-     address.update({
-       isConfirmed:true
-    });
-});
+//      address.update({
+//        isConfirmed:true
+//     });
+// });
 router.post("/changePassword", changePassword);
-router.post("/forgotPassword", forgotPassword);
-router.post("/resetPassword", resetPassword);
+router.post("/forgotPassword",
+ forgotPassword);
+router.post("/resetPassword",passport.authenticate("jwt", { session: false}),
+ resetPassword);
 
 router.post("/deactivateAccount", deactivateAccount);
 

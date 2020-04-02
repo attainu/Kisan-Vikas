@@ -32,6 +32,7 @@ const jwtOptions = {
   ]),
   secretOrKey:TOKEN_SECRET
 };
+// const secretKey = `${this.getDataValue("email")} - ${new Date(this.getDataValue("createdAt")).getTime()}`;
 
 passport.use(
   new JWTStrategy(jwtOptions, async ({
