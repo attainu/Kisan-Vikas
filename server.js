@@ -17,7 +17,7 @@ app.use(
     cors({
         origin: "http://localhost:1234",
         credentials: true,
-        allowedHeaders: ["Content-Type"]
+        allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
 app.use(express.json());

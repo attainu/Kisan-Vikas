@@ -193,8 +193,9 @@ module.exports =   {
 
         async forgotPassword(req, res){
             const { email } = req.body;
-            if(!email) return
-            res.status(400).send("email is required")
+            if(!email) 
+            return res.status(400).send("email is required")
+            
             try {
                 const user = await User.findOne({where:{
                     email

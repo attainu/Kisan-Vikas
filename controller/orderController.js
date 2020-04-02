@@ -22,6 +22,7 @@ module.exports = {
         receipt: transactionId,
         payment_capture: 0
       };
+      console.log(orderOptions)
       const order = await instance.orders.create(orderOptions);
       const transaction = {
         userId: id,
@@ -38,6 +39,7 @@ module.exports = {
         statusCode: 201,
         orderId: order.id,
         amount: transaction.order_value,
+        name: user.dataValues.name,
         email: user.dataValues.email
       });
     } catch (err) {
@@ -56,8 +58,10 @@ module.exports = {
       razorpay_payment_id,
       razorpay_signature,
       order_id,
-      email
+      email,
+      name
     } = req.body;
+    console.log(amount)
     try {
       const amountInRupees = amount / 100;
       const createdSignature = createSignature(

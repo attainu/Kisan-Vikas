@@ -18,7 +18,7 @@ router.post("/register",register);
 router.get("/confirm/:token",confirmEmail)
 
 router.post("/login", login );
-router.post("/logout",logout);
+router.post("/logout",logout)
 // router.post("/address", function (req,res){
 //     const id = 1
 //     const address =  User.findOne({
@@ -32,9 +32,11 @@ router.post("/logout",logout);
 //     });
 // });
 router.post("/changePassword", changePassword);
-router.post("/forgotPassword",
+router.post("/forgotPassword",passport.authenticate("jwt", { session: false}),
  forgotPassword);
 router.post("/resetPassword",passport.authenticate("jwt", { session: false}),
+ resetPassword);
+ router.get("/resetPassword/:",passport.authenticate("jwt",{session:false}),
  resetPassword);
 
 router.post("/deactivateAccount", deactivateAccount);
