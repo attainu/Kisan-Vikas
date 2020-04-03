@@ -32,9 +32,9 @@ router.post("/logout",logout)
 //     });
 // });
 router.post("/changePassword", changePassword);
-router.post("/forgotPassword",passport.authenticate("jwt", { session: false}),
+router.post("/forgotPassword",
  forgotPassword);
-router.post("/resetPassword",passport.authenticate("jwt", { session: false}),
+router.post("/resetPassword",
  resetPassword);
  router.get("/resetPassword/:",passport.authenticate("jwt",{session:false}),
  resetPassword);

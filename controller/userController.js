@@ -42,34 +42,34 @@ module.exports =   {
         }
     },
 
-    // async resetPassword (req, res) {
-    //     const {resetToken } = req.params;
-    //     try {
-    //         //finding the user with the help of token
-    //         const user = await User.findOne({where:{
-    //             resetToken
-    //         }});
-    //         if (!user) {
-    //             return res.send("forgot password");
-    //         }
-    //         const secretKey = process.env.TOKEN_SECRET;
-    //         // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
-    //         const payload = await verify(resetToken,secretKey);
-    //         if(payload) {
-    //             return res.send("resetPassword",{
-    //                 email:user.getDataValue("email")
-    //             });
-    //     }
+    async resetPassword (req, res) {
+        const {resetToken } = req.params;
+        try {
+            //finding the user with the help of token
+            const user = await User.findOne({where:{
+                resetToken
+            }});
+            if (!user) {
+                return res.send("forgot password");
+            }
+            const secretKey = process.env.TOKEN_SECRET;
+            // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
+            const payload = await verify(resetToken,secretKey);
+            if(payload) {
+                return res.send("resetPassword",{
+                    email:user.getDataValue("email")
+                });
+        }
             
-    //     } catch(err) {
-    //         console.log(err);
-    //         if(err.name === "TokenEpiredError") {
-    //             return res.send("forgot password")
-    //         }
-    //         res.status(500).send("server error")
-    //     }
+        } catch(err) {
+            console.log(err);
+            if(err.name === "TokenEpiredError") {
+                return res.send("forgot password")
+            }
+            res.status(500).send("server error")
+        }
         
-    // },
+    },
     async register(req, res) {
         try {
             const user = await User.create({
@@ -185,6 +185,11 @@ module.exports =   {
           }
           
         },
+        // async forgotPassword(req,res) {
+        //     try {
+        //         if()
+        //     }
+        // }
 
         // async regenerateToken(req, res) {
         //     await req.user.generateConfirmToken();

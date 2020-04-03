@@ -2,7 +2,9 @@ const express = require("express");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
 const cors = require("cors")
+const multer = require("multer")
 dotenv.config();
 require("./db");
 require("./passport");
@@ -22,6 +24,7 @@ app.use(
 );
 app.use(express.json());
 app.use(passport.initialize());
+app.use(fileupload());
 
 // user Routes
 app.use(require("./routes/userRoutes"));

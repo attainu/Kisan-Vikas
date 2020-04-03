@@ -3,7 +3,8 @@ const User = require("../models/User");
 const generateEmail = require("../utils/generateEmail");
 const instance = require("../utils/razorpay");
 const createSignature = require("../utils/createSignature");
-const transactions = require("../transaction")
+const transactions = require("../transactions.json")
+// console.log(transactions)
 const { v4: uuid } = require("uuid");
 // const cors = require("cors")
 const fs = require("fs-extra");
@@ -36,8 +37,8 @@ module.exports = {
         isPending: true
       };
       transactions.push(transaction);
-      const transactionJSON = JSON.stringify(transaction);
-      await fs.writeFile("./transaction.json",transactionJSON);
+      const transactionsJSON = JSON.stringify(transactions);
+      await fs.writeFile("./transactions.json",transactionsJSON);
       
       
       res.status(201).json({
@@ -70,8 +71,20 @@ module.exports = {
         razorpay_order_id,
         razorpay_payment_id
       );
-      if (createdSignature !== razorpay_signature) {
-        return res.status(401).send({statusCode:401,message:"invalid payment request"});
+      // console.log(createdSignature)
+      if (createdSignature !== razorpay_signature) 
+      {
+        await sendMail(
+          email,
+          "fail",
+          amount,
+          razorpay_payment_id,
+          razorpay_order_id
+        );
+        return res.status(401).send({
+          statusCode:401,
+          message:"invalid payment request"
+        });
       }
       const captureResponse = await instance.payments.capture(
         //   amountInRupees,
@@ -79,34 +92,43 @@ module.exports = {
           amount,
           currency
         );
-    //     return res.status(401).send({
-    //       statusCode: 401,
-    //       message: "Invalid payment request"
-    //     });
-    //   }
-      const captureResponses = await instance.payments.capture(
-        razorpay_payment_id,
-        amount,
-        currency
-      );
-      const transaction = transactions.find( t => t.razorpay_order_id === razorpay_order_id);
+  
+      const transaction = await Orders.findOne({
+        where:{
+          order_id
+        }
+      });
       if (!transaction) {
         return res.status(401).send({
           statusCode: 401,
           message: "Invalid payment request"
         });
       }
-      transaction.razorpay_payment_id = razorpay_payment_id;
-      transaction.razorpay_signature = razorpay_signature;
-      transaction.isPending = false;
-      const transactionJSON = JSON.stringify(transactions);
-      await fs.writeFile("./transactions.json", transactionsJSON);
-      console.log(captureResponse);
-      res.json(transaction);
       
+      await transaction.update({
+        razorpay_payment_id:razorpay_payment_id,
+        razorpay_signature:razorpay_signature,
+        isPending:false,
+        razorpay_order_id:razorpay_order_id
+      });
+
+      await sendMail(
+        email,
+        "success",
+        amount,
+        razorpay_payment_id,
+        razorpay_order_id
+      );
+      console.log("mail send successfully");
+      res.status(201).send({
+        transaction,
+        captureResponse
+      });
       
     } catch (err) {
-      res.statusCode(500).send({ statusCode:500, message:"server error"})
+      if(err.name === "ValidationError")
+      res.status(400).send(`Validation Error: ${err.message}`);
+      res.send(err)
     }
 }
-}
+};

@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+// const fileupload = require("express-fileupload");
 
 module.exports = {
     async createProduct(req, res) {
@@ -33,16 +34,7 @@ module.exports = {
                     id
                 }
             });
-            // const faq = await FAQ.findAll({
-            //     where: {
-            //         productId: id
-            //     }
-            // });
-            // const review = await Review.findAll({
-            //     where: {
-            //         productId: id
-            //     }
-            // });
+            
             res.status(200).send({
                 product
             });
@@ -69,5 +61,4 @@ module.exports = {
             res.send(err.message);
         }
     }
-
-}
+};
