@@ -8,7 +8,7 @@ require("./db");
 require("./passport");
 
 //routes of both api as well as normal
-const userRoutes = require("./routes/userRoutes");
+// const userRoutes = require("./routes/userRoutes");
 
 //init
 const app = express();
@@ -17,7 +17,7 @@ app.use(
     cors({
         origin: "http://localhost:1234",
         credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"]
+        allowedHeaders: ["Content-Type"]
     })
 );
 app.use(express.json());

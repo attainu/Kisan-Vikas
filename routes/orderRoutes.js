@@ -5,9 +5,7 @@ const { order, verify } = require("../controller/orderController");
 
 router.post(
   "/orders",
-  passport.authenticate("jwt", {
-    session: false
-  }),
+  
   order
 );
 router.post("/verify", verify);
