@@ -1,60 +1,52 @@
 const Orders = require("../models/order");
 const User = require("../models/User");
-const generateEmail = require("../utils/generateEmail");
 const instance = require("../utils/razorpay");
 const createSignature = require("../utils/createSignature");
-const transactions = require("../transactions.json")
-// console.log(transactions)
+const sendMail = require("../utils/generateEmail");
 const { v4: uuid } = require("uuid");
-// const cors = require("cors")
-const fs = require("fs-extra");
 
 module.exports = {
   async order(req, res) {
-    const { user, amountInPaise, currency} = req.body;
-    
-      
+    try {
+      const id = req.user.id;
+      const user = await User.findOne({
+        where: {
+          id
+        }
+      });
+      const { amount } = req.body;
       const transactionId = uuid();
       const orderOptions = {
-        currency,
-        amount: amountInPaise,
+        currency: "INR",
+        amount: amount * 100,
         receipt: transactionId,
         payment_capture: 0
       };
-      try {
-
-      
-    //   console.log(orderOptions)
       const order = await instance.orders.create(orderOptions);
-      console.log(order);
       const transaction = {
-        _id: transactionId,
-        user,
-        order_value: `${amountInPaise / 100} INR`,
-        razorpay_order_id: order.id,
+        userId: id,
+        order_value: amount,
+        order_id: order.id,
         razorpay_payment_id: null,
         razorpay_signature: null,
         isPending: true
       };
-      transactions.push(transaction);
-      const transactionsJSON = JSON.stringify(transactions);
-      await fs.writeFile("./transactions.json",transactionsJSON);
-      
-      
+      const orderSave = await Orders.create({
+        ...transaction
+      });
       res.status(201).json({
         statusCode: 201,
         orderId: order.id,
-        amount: transaction.order_value,
-        name: user.name,
-    
+        amount: transaction.order_value
+        
       });
     } catch (err) {
       console.log(err);
-      res.status(500).send({statusCode:500,message:"server error"});
+      if (err.name === "ValidationError")
+        return res.status(400).send(`Validation Error: ${err.message}`);
+      res.send(err);
     }
-},
-
-  
+  },
 
   async verify(req, res) {
     const {
@@ -62,39 +54,30 @@ module.exports = {
       currency,
       razorpay_order_id,
       razorpay_payment_id,
-      razorpay_signature
+      razorpay_signature,
+      order_id,
+      email
     } = req.body;
-    // console.log(amount)
     try {
-    //   const amountInRupees = amount / 100;
+      const amountInRupees = amount / 100;
       const createdSignature = createSignature(
         razorpay_order_id,
         razorpay_payment_id
       );
-      // console.log(createdSignature)
-      if (createdSignature !== razorpay_signature) 
-      {
-        await sendMail(
-          email,
-          "fail",
-          amount,
-          razorpay_payment_id,
-          razorpay_order_id
-        );
+      if (createdSignature !== razorpay_signature) {
+        
         return res.status(401).send({
-          statusCode:401,
-          message:"invalid payment request"
+          statusCode: 401,
+          message: "Invalid payment request"
         });
       }
       const captureResponse = await instance.payments.capture(
-        //   amountInRupees,
-          razorpay_payment_id,
-          amount,
-          currency
-        );
-  
+        razorpay_payment_id,
+        amount,
+        currency
+      );
       const transaction = await Orders.findOne({
-        where:{
+        where: {
           order_id
         }
       });
@@ -104,31 +87,23 @@ module.exports = {
           message: "Invalid payment request"
         });
       }
-      
       await transaction.update({
-        razorpay_payment_id:razorpay_payment_id,
-        razorpay_signature:razorpay_signature,
-        isPending:false,
-        razorpay_order_id:razorpay_order_id
+        razorpay_payment_id: razorpay_payment_id,
+        razorpay_signature: razorpay_signature,
+        isPending: false,
+        razorpay_order_id: razorpay_order_id
       });
-
-      await sendMail(
-        email,
-        "success",
-        amount,
-        razorpay_payment_id,
-        razorpay_order_id
-      );
-      console.log("mail send successfully");
+      
+      
       res.status(201).send({
         transaction,
         captureResponse
       });
-      
     } catch (err) {
-      if(err.name === "ValidationError")
-      res.status(400).send(`Validation Error: ${err.message}`);
-      res.send(err)
+      console.log(err);
+      if (err.name === "ValidationError")
+        return res.status(400).send(`Validation Error: ${err.message}`);
+      res.send(err);
     }
-}
+  }
 };

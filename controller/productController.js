@@ -60,5 +60,19 @@ module.exports = {
                 return res.status(400).send(`Validation Error: ${err.message}`);
             res.send(err.message);
         }
+    },
+
+    async uploadPhoto(req, res, next){
+        const file = req.files.photo;
+        file.mv('/uploads/' + file.name, function(err, result){
+            if (err) res.send("err")
+            next();
+
+            });
+        
+        res.send({
+            success:true,
+            message:"file upload"
+        });
     }
 };
