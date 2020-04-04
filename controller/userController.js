@@ -42,19 +42,20 @@ module.exports =   {
         }
     },
 
-    async resetPassword (req, res) {
-        const {resetToken } = req.params;
+    async resetPassword123 (req, res) {
+        console.log(req.params)
+        const {token } = req.params;
         try {
             //finding the user with the help of token
             const user = await User.findOne({where:{
-                resetToken
+                token
             }});
             if (!user) {
-                return res.send("forgot password");
+                return res.send("user not found");
             }
             const secretKey = process.env.TOKEN_SECRET;
             // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
-            const payload = await verify(resetToken,secretKey);
+            const payload = await verify(token,secretKey);
             if(payload) {
                 return res.send("resetPassword",{
                     email:user.getDataValue("email")
@@ -64,7 +65,7 @@ module.exports =   {
         } catch(err) {
             console.log(err);
             if(err.name === "TokenEpiredError") {
-                return res.send("forgot password")
+                return res.send("token has been expired")
             }
             res.status(500).send("server error")
         }
