@@ -19,18 +19,7 @@ router.get("/confirm/:token",confirmEmail)
 
 router.post("/login", login );
 router.post("/logout",logout)
-// router.post("/address", function (req,res){
-//     const id = 1
-//     const address =  User.findOne({
-//         where: {
-//             id
-//         }
-//     });
-    
-//      address.update({
-//        isConfirmed:true
-//     });
-// });
+
 router.post("/changePassword", changePassword);
 router.post("/forgotPassword",
  forgotPassword);

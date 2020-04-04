@@ -63,10 +63,12 @@ module.exports = {
     },
 
     async uploadPhoto(req, res, next){
+        // console.log(req.files);
         const file = req.files.photo;
-        file.mv('/uploads/' + file.name, function(err, result){
-            if (err) res.send("err")
-            next();
+        file.mv('./uploads/' + file.name, function(err){
+            if (err) //res.send("err")
+                throw err;
+            // next();
 
             });
         

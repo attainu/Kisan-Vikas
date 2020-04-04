@@ -185,16 +185,7 @@ module.exports =   {
           }
           
         },
-        // async forgotPassword(req,res) {
-        //     try {
-        //         if()
-        //     }
-        // }
-
-        // async regenerateToken(req, res) {
-        //     await req.user.generateConfirmToken();
-        //     res.status(202).send("confirmation email resent.please check your inbox")
-        // },
+        
 
         async forgotPassword(req, res){
             const { email } = req.body;
@@ -207,7 +198,7 @@ module.exports =   {
                 }
             });
             if(!user) {
-                return res.status(400).send("there is no user presen.kindly register")
+                return res.status(400).send("there is no user present.kindly register")
             }
             await user.generateToken("reset");
             res.send("email sent successfully.check your inbox")
@@ -229,19 +220,14 @@ module.exports =   {
             }
         },
     
-    
-
-    
-    
-
-    async showUserData(req,res) {
-        res.json({ user: req.user });
+        async showUserData(req,res) {
+            res.json({ user: req.user });
     },
 
-    async fetchUserFromGoogle(req, res){
-        const user = req.user;
-         await user.generateToken();
-        console.log(user.token)
+        async fetchUserFromGoogle(req, res){
+            const user = req.user;
+            await user.generateToken();
+            console.log(user.token)
         //send token as cookies
         res.cookie("token",user.token, {
             expires: new Date(Date.now() + 1000 * 60 *60 * 12),
