@@ -43,19 +43,19 @@ module.exports =   {
     },
 
     async resetPassword123 (req, res) {
-        console.log(req.params)
-        const {token } = req.params;
+        // console.log(req.params)
+        const {resetToken } = req.params;
         try {
             //finding the user with the help of token
             const user = await User.findOne({where:{
-                token
+                resetToken
             }});
             if (!user) {
                 return res.send("user not found");
             }
             const secretKey = process.env.TOKEN_SECRET;
             // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
-            const payload = await verify(token,secretKey);
+            const payload = await verify(resetToken,secretKey);
             if(payload) {
                 return res.send("resetPassword",{
                     email:user.getDataValue("email")
@@ -212,8 +212,8 @@ module.exports =   {
             const { password, email} = req.body;
             try {
                 await User.update({
-                    password,resetToken:""
-                }, {where:{email},individualHooks:true});
+                    password,resetToken:""},
+                    {where:{email},individualHooks:true});
                 return res.send("incorrect crendentials")
             } catch(err) {
                 console.log(err);

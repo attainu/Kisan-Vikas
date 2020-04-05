@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Review = require("../models/review");
 // const fileupload = require("express-fileupload");
 
 module.exports = {
@@ -34,9 +35,16 @@ module.exports = {
                     id
                 }
             });
+            const review = await Review.findAll({
+                where: {
+                    productId: id
+                }
+            });
+
             
             res.status(200).send({
-                product
+                product,
+                review
             });
         } catch (err) {
             console.log(err);
