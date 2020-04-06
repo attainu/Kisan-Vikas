@@ -45,15 +45,6 @@ try {
     throw err;
 }
 }
-// mailTransport.verify()
-// .then(res => console.log(res))
-// .catch(err => console.log(err));
 
-// mailTransport
-// .sendMail({
-//     from:"chaitalimaske56@yahoo.com",
-//     to:"ssbarde@gmail.com",
-//     text:"check email"
-// }).then(res => console.res(res))
 
 module.exports = sendMailToUser;

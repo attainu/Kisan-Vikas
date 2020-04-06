@@ -4,11 +4,14 @@ const {
 const passport = require("passport");
 const router = Router();
 const {
+    getProducts,
     createProduct,
     uploadPhoto,
     productDetails,
     searchProducts
 } = require("../controller/productController");
+router.get("/products",
+getProducts);
 
 
 router.post('/addproduct', passport.authenticate("jwt", {

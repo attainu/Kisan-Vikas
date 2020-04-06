@@ -21,7 +21,7 @@ router.post("/login", login );
 router.post("/logout",logout)
 
 router.post("/changePassword", changePassword);
-router.get("/reset/:resetToken",resetPassword123)
+router.post("/reset/:resetToken",resetPassword123)
 // (req,res) => {
     // console.log(req.params)
     // console.log(req.body)

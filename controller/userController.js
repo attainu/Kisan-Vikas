@@ -51,7 +51,11 @@ module.exports =   {
                 resetToken
             }});
             if (!user) {
-                return res.send("user not found");
+                await User.update({
+                    password,resetToken:""},
+                    {where:{email},individualHooks:true});
+                    return res.send("incorrect crendentials")
+                // return res.send("user not found");
             }
             const secretKey = process.env.TOKEN_SECRET;
             // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
@@ -90,6 +94,7 @@ module.exports =   {
     },
 
     async login (req,res) {
+        // console.log("hello223555555555555555555555555555555555555555555555555555555555556666666666666")
         const{ email,password } = req.body;
         // console.log(!email,!password)
         if(!email || !password)
@@ -211,10 +216,10 @@ module.exports =   {
         async resetPassword (req, res) {
             const { password, email} = req.body;
             try {
-                await User.update({
-                    password,resetToken:""},
-                    {where:{email},individualHooks:true});
-                return res.send("incorrect crendentials")
+                // await User.update({
+                //     password,resetToken:""},
+                //     {where:{email},individualHooks:true});
+                // return res.send("incorrect crendentials")
             } catch(err) {
                 console.log(err);
                 res.status(500).send(err.message)
