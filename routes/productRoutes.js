@@ -14,9 +14,9 @@ router.get("/products",
 getProducts);
 
 
-router.post('/addproduct', passport.authenticate("jwt", {
-    session: false
-}),createProduct);
+router.post('/addproduct', 
+    
+createProduct);
 router.post("/upload",uploadPhoto);
 router.get("/products/:id", productDetails)
 router.get("/search/:category", searchProducts)

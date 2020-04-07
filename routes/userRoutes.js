@@ -8,6 +8,7 @@ const {
     changePassword,
     forgotPassword,
     resetPassword123,
+    resetPassword,
     confirmEmail,
     deactivateAccount,
     showUserData,
@@ -21,15 +22,15 @@ router.post("/login", login );
 router.post("/logout",logout)
 
 router.post("/changePassword", changePassword);
-router.post("/reset/:resetToken",resetPassword123)
+router.get("/reset/:resetToken",resetPassword123)
 // (req,res) => {
     // console.log(req.params)
     // console.log(req.body)
 // });
 router.post("/forgotPassword",
  forgotPassword);
-// router.post("/resetPassword",
-//  resetPassword);
+router.post("/resetPassword",passport.authenticate("jwt",{session:false}),
+ resetPassword);
 //  router.get("/resetPassword/:",passport.authenticate("jwt",{session:false}),
 //  resetPassword);
 

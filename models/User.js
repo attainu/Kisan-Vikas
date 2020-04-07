@@ -20,6 +20,7 @@ const userSchema = {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique:true
 
     },
     password: {

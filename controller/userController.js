@@ -50,20 +50,30 @@ module.exports =   {
             const user = await User.findOne({where:{
                 resetToken
             }});
+            
             if (!user) {
-                await User.update({
-                    password,resetToken:""},
-                    {where:{email},individualHooks:true});
-                    return res.send("incorrect crendentials")
-                // return res.send("user not found");
+            //     await User.update({
+            //         password,resetToken:""},
+            //         {where:{email},individualHooks:true});
+            //         return res.send("incorrect crendentials")
+                return res.send("user not found");
             }
+            req.user = user.dataValues;
+            console.log(resetToken)
             const secretKey = process.env.TOKEN_SECRET;
             // `${user.getDataValue("email")} - ${new Date(user.getDataValue("createdAt")).getTime()}`;
             const payload = await verify(resetToken,secretKey);
             if(payload) {
-                return res.send("resetPassword",{
-                    email:user.getDataValue("email")
-                });
+                
+                    await user.update({
+                        isConfirmed:true,
+                        resetToken:""
+                    });
+                // return res.send("resetPassword",{
+                //     email:user.getDataValue("email")
+                // });
+                 req.user = undefined;
+                 return res.send("get token successfully")
         }
             
         } catch(err) {
@@ -75,6 +85,11 @@ module.exports =   {
         }
         
     },
+    
+    
+     
+              
+    
     async register(req, res) {
         try {
             const user = await User.create({
@@ -215,16 +230,44 @@ module.exports =   {
 
         async resetPassword (req, res) {
             const { password, email} = req.body;
+            if (!email ||  !password)
+                return res.status(400).send("Bad request");
             try {
-                // await User.update({
-                //     password,resetToken:""},
-                //     {where:{email},individualHooks:true});
-                // return res.send("incorrect crendentials")
-            } catch(err) {
-                console.log(err);
-                res.status(500).send(err.message)
+            //     await User.update(
+            //         { password, resetToken: ""},
+            //         {where: {email}, individualHooks:true}
+            //     );
+            //     return res.send("reset password");
+            // } catch (err) {
+            //     console.log(err);
+            //     res.status(500).send(err.message)
+            // }findByEmailAndPasswor
+            const user = await User.findOne({where:{
+                email
+            }}
+                
+                
+                
+                
+                );
+                console.log(user)
+
+            if (!user) {
+                return res.status(401).send("Incorrect credentials");
+              }
+              await user.update({
+                //  password, resetToken: ""},
+                // {where: {email}, individualHooks:true
+                password
+              });
+              return res.send(user);
+            } catch (err) {
+              console.log(err.message);
+              res.send("invalid credential");
             }
         },
+            
+        
     
         async showUserData(req,res) {
             res.json({ user: req.user });

@@ -8,7 +8,7 @@ const {
     reviews,
     editReview
 } = require("../controller/reviewController");
-
+console.log("review")
 router.get("/reviews/:id", passport.authenticate("jwt", {
     session: false
 }), reviews)

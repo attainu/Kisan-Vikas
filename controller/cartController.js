@@ -74,9 +74,10 @@ module.exports = {
     async carts(req, res) {
         try {
             const userId = req.user.id;
+            // console.log(userId)
             const cartProducts = await Cart.findAll({
                 where: {
-                    userId
+                    userId:userId
                 }
             });
             res.status(200).json(cartProducts);

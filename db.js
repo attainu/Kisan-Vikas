@@ -5,7 +5,7 @@ const {
 } = process.env;
 
 const sequelize = new Sequelize(
-  POSTGRES_URI.replace("<password>", POSTGRES_PASSWORD)
+  POSTGRES_URI.replace("<password>", POSTGRES_PASSWORD),{logging:false}
 );
 
 sequelize.sync();
