@@ -233,15 +233,7 @@ module.exports =   {
             if (!email ||  !password)
                 return res.status(400).send("Bad request");
             try {
-            //     await User.update(
-            //         { password, resetToken: ""},
-            //         {where: {email}, individualHooks:true}
-            //     );
-            //     return res.send("reset password");
-            // } catch (err) {
-            //     console.log(err);
-            //     res.status(500).send(err.message)
-            // }findByEmailAndPasswor
+        
             const user = await User.findOne({where:{
                 email
             }}
@@ -256,8 +248,7 @@ module.exports =   {
                 return res.status(401).send("Incorrect credentials");
               }
               await user.update({
-                //  password, resetToken: ""},
-                // {where: {email}, individualHooks:true
+                
                 password
               });
               return res.send(user);
